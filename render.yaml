@@ -1,8 +1,10 @@
 services:
   - type: web
     name: music-downloader
-    runtime: docker
+    runtime: python
     plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 -m uvicorn src.server:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips '*'
     healthCheckPath: /health
     autoDeploy: true
     envVars:
@@ -10,5 +12,3 @@ services:
         value: "1"
       - key: PYTHONUNBUFFERED
         value: "1"
-      - key: PORT
-        value: "10000"
