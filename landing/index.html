@@ -225,7 +225,7 @@ fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
         }
     })
     .catch(() => {
-        document.getElementById('versionText').textContent = '下载链接加载失败，请前往 GitHub Releases';
+        document.getElementById('versionText').innerHTML = '暂无发布版本 · <a href="https://github.com/' + REPO + '/releases" style="color: var(--accent-glow);">前往 GitHub Releases 查看</a>';
         btnMac.href = `https://github.com/${REPO}/releases`;
         btnWin.href = `https://github.com/${REPO}/releases`;
     });
