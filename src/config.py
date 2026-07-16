@@ -5,13 +5,22 @@ import os
 import sys
 import platform
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 APP_NAME = "Music Downloader"
-PORT = 19527
-HOST = "127.0.0.1"
 
-# 下载目录：优先用用户配置，否则用系统默认下载目录
+# 端口：云端平台通过 PORT 环境变量注入，本地默认 19527
+PORT = int(os.environ.get("PORT", 19527))
+
+# 是否为云端环境
+IS_CLOUD = bool(os.environ.get("RENDER") or os.environ.get("DYNO") or os.environ.get("FLY_APP_NAME"))
+
+# Host：云端绑定 0.0.0.0，本地绑定 127.0.0.1
+HOST = "0.0.0.0" if IS_CLOUD else "127.0.0.1"
+
+# 下载目录：云端用 /tmp（可写临时目录），本地用用户下载目录
 def _get_default_download_dir() -> str:
+    if IS_CLOUD:
+        return "/tmp/md_downloads"
     system = platform.system()
     if system == "Darwin":
         return os.path.expanduser("~/Downloads/MusicDownloader")
@@ -49,9 +58,12 @@ def get_ffmpeg_path() -> str:
         else:
             return os.path.join(BASE_DIR, "bin", "ffmpeg")
     else:
-        # 开发环境：用系统安装的 ffmpeg
+        # 开发/云端环境：用系统安装的 ffmpeg
         return "ffmpeg"
 
 
 # 临时下载缓存目录
-TEMP_DIR = os.path.join(os.path.expanduser("~"), ".music_downloader", "temp")
+if IS_CLOUD:
+    TEMP_DIR = "/tmp/md_temp"
+else:
+    TEMP_DIR = os.path.join(os.path.expanduser("~"), ".music_downloader", "temp")

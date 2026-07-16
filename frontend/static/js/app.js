@@ -1,5 +1,6 @@
 /**
  * Music Downloader — 前端交互逻辑
+ * 支持本地桌面版和云端网站版
  */
 
 // ========================================
@@ -38,6 +39,7 @@ let currentResult = null;
 let selectedFormat = null;
 let currentTaskId = null;
 let progressEventSource = null;
+const IS_CLOUD = window.IS_CLOUD || false;
 
 // ========================================
 // 初始化
@@ -61,21 +63,26 @@ function init() {
     // 下载按钮
     els.downloadBtn.addEventListener('click', startDownload);
 
-    // 打开文件夹
+    // 下载文件 / 打开文件夹
     els.openFolderBtn.addEventListener('click', () => {
         if (currentTaskId) {
-            fetch(`/api/download/${currentTaskId}/status`)
-                .then(r => r.json())
-                .then(data => {
-                    if (data.output_path) {
-                        // 触发打开文件夹请求
-                        fetch('/api/open-folder', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ path: data.output_path }),
-                        }).catch(() => {});
-                    }
-                });
+            if (IS_CLOUD) {
+                // 云端：通过浏览器下载文件
+                window.open(`/api/download/${currentTaskId}/file`, '_blank');
+            } else {
+                // 桌面版：打开本地文件夹
+                fetch(`/api/download/${currentTaskId}/status`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.output_path) {
+                            fetch('/api/open-folder', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ path: data.output_path }),
+                            }).catch(() => {});
+                        }
+                    });
+            }
         }
     });
 
@@ -94,6 +101,11 @@ function init() {
             parseUrl();
         }
     });
+
+    // 云端：按钮文字适配
+    if (IS_CLOUD) {
+        els.openFolderBtn.textContent = '下载文件';
+    }
 }
 
 // ========================================
@@ -106,11 +118,12 @@ async function parseUrl() {
     showParsing();
 
     try {
-        const resp = await fetch('/api/parse', {
+        const resp = await fetchWithTimeout('/api/parse', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url }),
-        });
+        }, 60000); // 60s 超时（云端冷启动可能需要时间）
+
         const data = await resp.json();
 
         if (!data.success) {
@@ -122,8 +135,28 @@ async function parseUrl() {
         currentResult = data;
         showResult(data);
     } catch (err) {
-        showError('解析失败，请检查链接或重试');
+        if (err.name === 'AbortError') {
+            showError('服务器正在唤醒中，请稍后重试...');
+        } else {
+            showError('解析失败，请检查链接或重试');
+        }
         resetParsing();
+    }
+}
+
+// ========================================
+// 带超时的 fetch（适配云端冷启动）
+// ========================================
+async function fetchWithTimeout(url, options = {}, timeout = 30000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    try {
+        const resp = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timeoutId);
+        return resp;
+    } catch (err) {
+        clearTimeout(timeoutId);
+        throw err;
     }
 }
 
@@ -238,7 +271,7 @@ async function startDownload() {
     }
 
     try {
-        const resp = await fetch('/api/download', {
+        const resp = await fetchWithTimeout('/api/download', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -248,7 +281,8 @@ async function startDownload() {
                 platform: currentResult.platform,
                 ext: selectedFormat.ext || 'mp3',
             }),
-        });
+        }, 60000);
+
         const data = await resp.json();
 
         if (!data.success) {
@@ -259,7 +293,11 @@ async function startDownload() {
         currentTaskId = data.task_id;
         listenProgress(currentTaskId);
     } catch (err) {
-        showError('启动下载失败');
+        if (err.name === 'AbortError') {
+            showError('服务器正在唤醒中，请稍后重试...');
+        } else {
+            showError('启动下载失败');
+        }
     }
 }
 
@@ -353,13 +391,15 @@ async function loadHistory() {
             return;
         }
 
+        const downloadLabel = IS_CLOUD ? '下载' : '打开';
+
         els.historyList.innerHTML = tasks.slice(0, 20).map(task => {
             const platformIcons = { bilibili: '📺', netease: '🎵', qqmusic: '🎶' };
             const icon = platformIcons[task.platform] || '📁';
 
             const isDone = task.status === 'done';
             const btnHtml = isDone
-                ? `<button class="btn btn-secondary btn-sm" onclick="openFile('${task.task_id}')">打开</button>`
+                ? `<button class="btn btn-secondary btn-sm" onclick="openFile('${task.task_id}')">${downloadLabel}</button>`
                 : `<span style="color:var(--text-muted);font-size:0.75rem">${task.status === 'error' ? '失败' : '进行中'}</span>`;
 
             return `
@@ -379,16 +419,8 @@ async function loadHistory() {
 }
 
 async function openFile(taskId) {
-    try {
-        const resp = await fetch(`/api/download/${taskId}/status`);
-        const data = await resp.json();
-        if (data.output_path) {
-            // 尝试触发下载/打开
-            window.open(`/api/download/${taskId}/file`, '_blank');
-        }
-    } catch (e) {
-        // ignore
-    }
+    // 云端和桌面版都通过浏览器下载文件
+    window.open(`/api/download/${taskId}/file`, '_blank');
 }
 
 // ========================================
@@ -399,7 +431,7 @@ function showError(msg) {
     els.errorToast.classList.remove('hidden');
     setTimeout(() => {
         els.errorToast.classList.add('hidden');
-    }, 4000);
+    }, 5000);
 }
 
 function hideError() {

@@ -24,5 +24,7 @@ Thumbs.db
 
 # Downloads
 Downloads/
-# Temporarily excluded (pending workflow scope token)
+
+# Temp files
+/tmp/
 .github/workflows/

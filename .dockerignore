@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.DS_Store
+build/
+Downloads/
+*.spec
+*.egg-info/
+.vscode/
+.idea/
+landing/

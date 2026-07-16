@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: music-downloader
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: RENDER
+        value: "1"
+      - key: PYTHONUNBUFFERED
+        value: "1"

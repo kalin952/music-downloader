@@ -82,7 +82,7 @@
             <div id="downloadDone" class="download-done hidden">
                 <div class="done-icon">✅</div>
                 <p>下载完成！</p>
-                <button id="openFolderBtn" class="btn btn-secondary">打开文件夹</button>
+                <button id="openFolderBtn" class="btn btn-secondary">下载文件</button>
                 <button id="newTaskBtn" class="btn btn-primary">再来一首</button>
             </div>
         </section>
@@ -110,9 +110,10 @@
     </div>
 
     <script>
-        // 注入 API 基础 URL（由服务端模板渲染）
+        // 注入配置（由服务端模板渲染）
         window.API_BASE = '';
         window.APP_VERSION = '{{ version }}';
+        window.IS_CLOUD = {{ is_cloud | tojson }};
     </script>
     <script src="/static/js/app.js"></script>
 </body>
