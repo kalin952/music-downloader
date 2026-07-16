@@ -17,12 +17,16 @@ COPY . .
 # 创建下载目录
 RUN mkdir -p /tmp/md_downloads /tmp/md_temp
 
+# 入口脚本可执行
+RUN chmod +x start.sh
+
 # 环境变量
 ENV RENDER=1
 ENV PYTHONUNBUFFERED=1
+ENV PORT=10000
 
 # Render 通过 PORT 环境变量指定端口
 EXPOSE 10000
 
-# 使用 uvicorn 直接启动（SSE 需要单 worker）
-CMD uvicorn src.server:app --host 0.0.0.0 --port ${PORT:-10000} --timeout-keep-alive 300
+# 使用启动脚本（错误更可见）
+CMD ["./start.sh"]
