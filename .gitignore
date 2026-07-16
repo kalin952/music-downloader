@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+*.egg-info/
+
+# PyInstaller
+build/pyinstaller-work/
+build/macos/pyinstaller-work/
+build/windows/pyinstaller-work/
+build/*/dist/*.app
+build/*/dist/*.exe
+*.spec
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Downloads
+Downloads/

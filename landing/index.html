@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music Downloader - 无损音乐下载工具</title>
+<style>
+    :root {
+        --bg: #0d0d0f;
+        --surface: #1a1a20;
+        --text: #e8e8ed;
+        --text-muted: #888;
+        --accent: #7c3aed;
+        --accent-glow: #a78bfa;
+        --border: #2a2a35;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    .container {
+        max-width: 680px;
+        width: 100%;
+        text-align: center;
+    }
+    .logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--accent), #db2777);
+        border-radius: 22px;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
+    }
+    h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .subtitle {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+    }
+    .supported {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2.5rem;
+    }
+    .supported .badge {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        padding: 0.45rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+    .download-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.9rem 2rem;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-mac {
+        background: #f0f0f5;
+        color: #1a1a20;
+    }
+    .btn-win {
+        background: linear-gradient(135deg, #0078d4, #005a9e);
+        color: #fff;
+    }
+    .btn-mac:hover { background: #e4e4eb; transform: translateY(-1px); }
+    .btn-win:hover { transform: translateY(-1px); opacity: 0.95; }
+    .btn-ios {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+    }
+    .btn-ios:hover { border-color: var(--accent); }
+    .version {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 2rem;
+    }
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+    }
+    .feature-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.25rem;
+        text-align: center;
+    }
+    .feature-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .feature-card .title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .feature-card .desc { font-size: 0.78rem; color: var(--text-muted); }
+
+    @media (max-width: 480px) {
+        body { padding: 1.5rem; }
+        h1 { font-size: 1.5rem; }
+        .download-buttons { flex-direction: column; align-items: center; }
+        .btn { width: 100%; justify-content: center; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">🎵</div>
+    <h1>Music Downloader</h1>
+    <p class="subtitle">
+        无损下载 B站视频、网易云音乐、QQ音乐<br>
+        支持 4K 视频提取、音频分离、弹幕下载
+    </p>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="icon">📺</div>
+            <div class="title">B站视频</div>
+            <div class="desc">4K 高清 · 音频提取 · 弹幕</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🎵</div>
+            <div class="title">网易云音乐</div>
+            <div class="desc">标准品质 · 无损 FLAC</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🎶</div>
+            <div class="title">QQ 音乐</div>
+            <div class="desc">128kbps · 320kbps</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🔒</div>
+            <div class="title">本地运行</div>
+            <div class="desc">隐私安全 · 无需注册</div>
+        </div>
+    </div>
+
+    <div class="download-buttons" id="downloadButtons">
+        <a href="#" class="btn btn-mac" id="btnMac">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            macOS 下载
+        </a>
+        <a href="#" class="btn btn-win" id="btnWin">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.5l8-1.09v6.59H3zm0 .73h8v6.68l-8-1.09v-5.59zM11.73 5.23L21 3.5v8.27h-9.27V5.23zm0 13.5V11.5H21v8.27l-9.27-1.04z"/></svg>
+            Windows 下载
+        </a>
+    </div>
+
+    <p class="version" id="versionText">最新版本加载中...</p>
+</div>
+
+<script>
+// 自动检测操作系统并高亮对应按钮
+const isMac = /Mac|iPhone|iPad/i.test(navigator.platform);
+const btnMac = document.getElementById('btnMac');
+const btnWin = document.getElementById('btnWin');
+
+if (isMac) {
+    btnMac.style.transform = 'scale(1.05)';
+    btnMac.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)';
+    btnMac.innerHTML = '🍎 ' + btnMac.innerHTML;
+} else {
+    btnWin.style.transform = 'scale(1.05)';
+    btnWin.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)';
+    btnWin.innerHTML = '🪟 ' + btnWin.innerHTML;
+}
+
+// 获取最新版本信息
+const REPO = 'kalin952/music-downloader';
+fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
+    .then(r => r.json())
+    .then(data => {
+        const version = data.tag_name || 'v1.0.0';
+        document.getElementById('versionText').textContent = '最新版本 ' + version;
+
+        // 更新下载链接
+        data.assets.forEach(asset => {
+            if (asset.name.endsWith('.dmg')) {
+                btnMac.href = asset.browser_download_url;
+            }
+            if (asset.name.includes('Setup.exe') || asset.name.endsWith('.exe')) {
+                btnWin.href = asset.browser_download_url;
+            }
+        });
+
+        // 如果没有找到 asset，使用 tag 级别的下载链接
+        if (!btnMac.href || btnMac.href === '#') {
+            btnMac.href = data.html_url;
+        }
+        if (!btnWin.href || btnWin.href === '#') {
+            btnWin.href = data.html_url;
+        }
+    })
+    .catch(() => {
+        document.getElementById('versionText').textContent = '下载链接加载失败，请前往 GitHub Releases';
+        btnMac.href = `https://github.com/${REPO}/releases`;
+        btnWin.href = `https://github.com/${REPO}/releases`;
+    });
+</script>
+
+</body>
+</html>
