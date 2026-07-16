@@ -13,6 +13,7 @@
         --accent: #7c3aed;
         --accent-glow: #a78bfa;
         --border: #2a2a35;
+        --green: #10b981;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -51,7 +52,7 @@
     .subtitle {
         color: var(--text-muted);
         font-size: 1.05rem;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
         line-height: 1.6;
     }
     .supported {
@@ -59,7 +60,7 @@
         gap: 0.75rem;
         justify-content: center;
         flex-wrap: wrap;
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
     }
     .supported .badge {
         background: var(--surface);
@@ -69,20 +70,81 @@
         font-size: 0.85rem;
         color: var(--text-muted);
     }
+
+    /* Cloud deploy section */
+    .cloud-section {
+        background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(219,39,119,0.08));
+        border: 1px solid rgba(124,58,237,0.2);
+        border-radius: 18px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    .cloud-section h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    .cloud-section p {
+        color: var(--text-muted);
+        font-size: 0.88rem;
+        margin-bottom: 1.25rem;
+        line-height: 1.5;
+    }
+    .btn-cloud {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.9rem 2.2rem;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: linear-gradient(135deg, var(--accent), #db2777);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+    }
+    .btn-cloud:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(124,58,237,0.4);
+    }
+    .cloud-steps {
+        margin-top: 1rem;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    /* Desktop section */
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+    }
     .download-buttons {
         display: flex;
         gap: 1rem;
         justify-content: center;
         flex-wrap: wrap;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
     }
     .btn {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.9rem 2rem;
+        padding: 0.8rem 1.8rem;
         border-radius: 12px;
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         text-decoration: none;
         border: none;
@@ -99,39 +161,44 @@
     }
     .btn-mac:hover { background: #e4e4eb; transform: translateY(-1px); }
     .btn-win:hover { transform: translateY(-1px); opacity: 0.95; }
-    .btn-ios {
-        background: var(--surface);
-        color: var(--text);
-        border: 1px solid var(--border);
-    }
-    .btn-ios:hover { border-color: var(--accent); }
+
     .version {
         color: var(--text-muted);
         font-size: 0.8rem;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
     }
     .features {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 2rem;
     }
     .feature-card {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 14px;
-        padding: 1.25rem;
+        padding: 1rem;
         text-align: center;
     }
-    .feature-card .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .feature-card .title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .feature-card .desc { font-size: 0.78rem; color: var(--text-muted); }
+    .feature-card .icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+    .feature-card .title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .feature-card .desc { font-size: 0.72rem; color: var(--text-muted); }
+
+    .footer-link {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+    }
+    .footer-link a {
+        color: var(--accent-glow);
+        text-decoration: none;
+    }
 
     @media (max-width: 480px) {
         body { padding: 1.5rem; }
         h1 { font-size: 1.5rem; }
         .download-buttons { flex-direction: column; align-items: center; }
         .btn { width: 100%; justify-content: center; }
+        .cloud-section { padding: 1.5rem; }
     }
 </style>
 </head>
@@ -145,45 +212,74 @@
         支持 4K 视频提取、音频分离、弹幕下载
     </p>
 
+    <div class="supported">
+        <span class="badge">B站视频</span>
+        <span class="badge">网易云音乐</span>
+        <span class="badge">QQ 音乐</span>
+        <span class="badge">4K 高清</span>
+        <span class="badge">无损 FLAC</span>
+    </div>
+
     <div class="features">
         <div class="feature-card">
             <div class="icon">📺</div>
             <div class="title">B站视频</div>
-            <div class="desc">4K 高清 · 音频提取 · 弹幕</div>
+            <div class="desc">4K 高清 · 音频提取</div>
         </div>
         <div class="feature-card">
             <div class="icon">🎵</div>
             <div class="title">网易云音乐</div>
-            <div class="desc">标准品质 · 无损 FLAC</div>
+            <div class="desc">标准 · 无损 FLAC</div>
         </div>
         <div class="feature-card">
             <div class="icon">🎶</div>
             <div class="title">QQ 音乐</div>
-            <div class="desc">128kbps · 320kbps</div>
+            <div class="desc">128k · 320k</div>
         </div>
         <div class="feature-card">
-            <div class="icon">🔒</div>
-            <div class="title">本地运行</div>
-            <div class="desc">隐私安全 · 无需注册</div>
+            <div class="icon">⚡</div>
+            <div class="title">在线使用</div>
+            <div class="desc">打开即用 · 无需安装</div>
         </div>
     </div>
 
+    <!-- Cloud Deploy Section -->
+    <div class="cloud-section">
+        <h2>☁️ 在线使用（推荐）</h2>
+        <p>一键部署到云端，获得永久在线网址，打开即用，无需安装任何软件。</p>
+        <a href="https://render.com/deploy?repo=https://github.com/kalin952/music-downloader" target="_blank" class="btn-cloud">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17 15.09 9.08 16.5 10.5 10 17z"/></svg>
+            一键部署到云端
+        </a>
+        <div class="cloud-steps">
+            点击按钮 → 用 GitHub 账号登录 → 点击 Apply → 等待约 3 分钟构建完成<br>
+            部署完成后会获得一个永久在线的网址，分享给任何人都能直接使用
+        </div>
+    </div>
+
+    <div class="divider">或者下载桌面版</div>
+
+    <!-- Desktop Download -->
     <div class="download-buttons" id="downloadButtons">
         <a href="#" class="btn btn-mac" id="btnMac">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-            macOS 下载
+            macOS
         </a>
         <a href="#" class="btn btn-win" id="btnWin">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 12V6.5l8-1.09v6.59H3zm0 .73h8v6.68l-8-1.09v-5.59zM11.73 5.23L21 3.5v8.27h-9.27V5.23zm0 13.5V11.5H21v8.27l-9.27-1.04z"/></svg>
-            Windows 下载
+            Windows
         </a>
     </div>
 
-    <p class="version" id="versionText">最新版本加载中...</p>
+    <p class="version" id="versionText">桌面版加载中...</p>
+
+    <div class="footer-link">
+        <a href="https://github.com/kalin952/music-downloader" target="_blank">GitHub</a>
+    </div>
 </div>
 
 <script>
-// 自动检测操作系统并高亮对应按钮
+// OS detect for desktop buttons
 const isMac = /Mac|iPhone|iPad/i.test(navigator.platform);
 const btnMac = document.getElementById('btnMac');
 const btnWin = document.getElementById('btnWin');
@@ -191,22 +287,19 @@ const btnWin = document.getElementById('btnWin');
 if (isMac) {
     btnMac.style.transform = 'scale(1.05)';
     btnMac.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)';
-    btnMac.innerHTML = '🍎 ' + btnMac.innerHTML;
 } else {
     btnWin.style.transform = 'scale(1.05)';
     btnWin.style.boxShadow = '0 4px 16px rgba(0,0,0,0.3)';
-    btnWin.innerHTML = '🪟 ' + btnWin.innerHTML;
 }
 
-// 获取最新版本信息
+// Fetch latest release
 const REPO = 'kalin952/music-downloader';
 fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
     .then(r => r.json())
     .then(data => {
         const version = data.tag_name || 'v1.0.0';
-        document.getElementById('versionText').textContent = '最新版本 ' + version;
+        document.getElementById('versionText').textContent = '桌面版最新版本 ' + version;
 
-        // 更新下载链接
         data.assets.forEach(asset => {
             if (asset.name.endsWith('.dmg')) {
                 btnMac.href = asset.browser_download_url;
@@ -216,7 +309,6 @@ fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
             }
         });
 
-        // 如果没有找到 asset，使用 tag 级别的下载链接
         if (!btnMac.href || btnMac.href === '#') {
             btnMac.href = data.html_url;
         }
@@ -225,7 +317,7 @@ fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
         }
     })
     .catch(() => {
-        document.getElementById('versionText').innerHTML = '暂无发布版本 · <a href="https://github.com/' + REPO + '/releases" style="color: var(--accent-glow);">前往 GitHub Releases 查看</a>';
+        document.getElementById('versionText').innerHTML = '桌面版即将发布 · <a href="https://github.com/' + REPO + '/releases" style="color: var(--accent-glow);">查看 GitHub</a>';
         btnMac.href = `https://github.com/${REPO}/releases`;
         btnWin.href = `https://github.com/${REPO}/releases`;
     });
