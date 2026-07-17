@@ -2,6 +2,7 @@
 FastAPI 应用主体
 """
 import os
+import sys
 import asyncio
 import json
 import time
@@ -75,7 +76,18 @@ if IS_CLOUD:
 @app.on_event("startup")
 async def startup():
     """确保下载目录存在"""
-    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+    print(f"[STARTUP] App: {APP_NAME} v{VERSION}", flush=True)
+    print(f"[STARTUP] IS_CLOUD: {IS_CLOUD}", flush=True)
+    print(f"[STARTUP] PORT: {PORT}, HOST: {HOST}", flush=True)
+    print(f"[STARTUP] DOWNLOAD_DIR: {DOWNLOAD_DIR}", flush=True)
+    print(f"[STARTUP] STATIC_DIR: {STATIC_DIR}", flush=True)
+    print(f"[STARTUP] TEMPLATES_DIR: {TEMPLATES_DIR}", flush=True)
+    try:
+        os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+        print(f"[STARTUP] Download dir created/verified", flush=True)
+    except Exception as e:
+        print(f"[STARTUP] ERROR creating download dir: {e}", flush=True)
+    print(f"[STARTUP] Ready to serve", flush=True)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -315,3 +327,25 @@ async def open_folder(request: Request):
 async def health():
     """健康检查"""
     return {"status": "ok", "cloud": IS_CLOUD}
+
+
+@app.get("/api/diag")
+async def diag():
+    """诊断信息：环境、路径、ffmpeg 等"""
+    import shutil
+    return {
+        "app": APP_NAME,
+        "version": VERSION,
+        "is_cloud": IS_CLOUD,
+        "port": PORT,
+        "host": HOST,
+        "download_dir": DOWNLOAD_DIR,
+        "download_dir_exists": os.path.isdir(DOWNLOAD_DIR),
+        "static_dir": STATIC_DIR,
+        "static_dir_exists": os.path.isdir(STATIC_DIR),
+        "templates_dir": TEMPLATES_DIR,
+        "templates_dir_exists": os.path.isdir(TEMPLATES_DIR),
+        "ffmpeg": shutil.which("ffmpeg"),
+        "python": sys.executable,
+        "cwd": os.getcwd(),
+    }
